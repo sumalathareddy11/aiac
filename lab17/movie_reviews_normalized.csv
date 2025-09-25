@@ -1,0 +1,16 @@
+review_id,review_text,rating,rating_normalized
+1,<p>Amazing movie!</p>,8.0,0.800
+2,Terrible acting & plot!!!,2.0,0.200
+3,<p>Amazing movie!</p>,8.0,0.800
+4,Terrible acting & plot!!!,8.0,0.800
+5,<p>Amazing movie!</p>,5.0,0.500
+6,Terrible acting & plot!!!,2.0,0.200
+7,<p>Amazing movie!</p>,8.0,0.800
+8,Terrible acting & plot!!!,8.0,0.800
+9,<p>Amazing movie!</p>,10.0,1.000
+10,Terrible acting & plot!!!,5.0,0.500
+11,<p>Amazing movie!</p>,8.0,0.800
+12,Terrible acting & plot!!!,2.0,0.200
+13,<p>Amazing movie!</p>,10.0,1.000
+14,Terrible acting & plot!!!,8.0,0.800
+15,<p>Amazing movie!</p>,8.0,0.800
