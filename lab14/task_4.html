@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fetch API List with Loading/Error</title>
+  <style>
+    .loading {
+      font-style: italic;
+      color: gray;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .item {
+      margin-bottom: 1em;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Posts</h1>
+  <div id="app">
+    <!-- Loading/Error/Content will be rendered here -->
+  </div>
+
+  <script>
+    const app = document.getElementById('app');
+
+    function createNode(tag, className, textContent) {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (textContent) el.textContent = textContent;
+      return el;
+    }
+
+    function showLoading() {
+      const loadingEl = createNode('p', 'loading', 'Loading posts...');
+      app.appendChild(loadingEl);
+    }
+
+    function showError(message) {
+      app.innerHTML = ''; // Clear previous content
+      const errorEl = createNode('p', 'error', `Error: ${message}`);
+      app.appendChild(errorEl);
+    }
+
+    function renderList(items) {
+      app.innerHTML = ''; // Clear loading/error
+      items.forEach(item => {
+        const itemEl = createNode('div', 'item');
+        const title = createNode('h3', null, item.title);
+        const body = createNode('p', null, item.body);
+        itemEl.appendChild(title);
+        itemEl.appendChild(body);
+        app.appendChild(itemEl);
+      });
+    }
+
+    async function fetchData() {
+      showLoading();
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        renderList(data.slice(0, 10)); // Show only first 10 posts
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    // Start the fetch
+    fetchData();
+  </script>
+</body>
+</html>

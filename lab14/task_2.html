@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Display Page</title>
+  <!-- Product Page Styles: Responsive, BEM, Hover Effects -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .product-image {
+      flex: 1;
+      max-width: 500px;
+    }
+    .product-image img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+    .product-details {
+      flex: 1;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+    .product-details h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .rating {
+      color: gold;
+      margin-bottom: 15px;
+    }
+    .price {
+      font-size: 24px;
+      color: #e63946;
+      margin: 15px 0;
+    }
+    .description {
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .btn {
+      display: inline-block;
+      background: #0077b6;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #023e8a;
+    }
+    .extra-info {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- Product Display Container -->
+  <div class="container">
+    <!-- Product Image -->
+    <div class="product-image">
+      <img src="https://via.placeholder.com/500x500.png?text=Product+Image" alt="Product">
+    </div>
+    <!-- Product Details -->
+    <div class="product-details">
+      <h1>Stylish Wireless Headphones</h1>
+      <div class="rating">★★★★☆ (120 reviews)</div>
+      <div class="price">₹2,499</div>
+      <p class="description">
+        Enjoy immersive sound with these wireless headphones. 
+        Designed for comfort with a sleek modern look, 
+        they provide up to 20 hours of battery life. 
+        Compatible with all Bluetooth-enabled devices.
+      </p>
+      <button class="btn" onclick="addToCart()">Add to Cart</button>
+      <div class="extra-info">
+        ✅ Free Delivery <br>
+        ✅ 7-Day Return Policy <br>
+        ✅ 1-Year Warranty
+      </div>
+    </div>
+  </div>
+  <!-- Add to Cart Alert JS -->
+  <script>
+    function addToCart() {
+      alert("✅ Your product has been added to the cart!");
+    }
+  </script>
+</body>
+</html>
