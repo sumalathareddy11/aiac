@@ -1,0 +1,64 @@
+{
+  "scan_time": "2025-11-06T20:21:12.583503",
+  "results": [
+    {
+      "target": "10.0.0.1",
+      "timestamp": "2025-11-06T20:21:12.581799",
+      "up": true,
+      "ports": [
+        {
+          "port": 22,
+          "protocol": "tcp",
+          "service": "ssh",
+          "state": "open",
+          "banner": "OpenSSH 8.9p1",
+          "rtt_ms": 14.81
+        },
+        {
+          "port": 3306,
+          "protocol": "tcp",
+          "service": "mysql",
+          "state": "closed",
+          "banner": "",
+          "rtt_ms": null
+        },
+        {
+          "port": 443,
+          "protocol": "tcp",
+          "service": "https",
+          "state": "open",
+          "banner": "",
+          "rtt_ms": 17.67
+        },
+        {
+          "port": 8080,
+          "protocol": "tcp",
+          "service": "http-proxy",
+          "state": "open",
+          "banner": "Apache Tomcat/9.0",
+          "rtt_ms": 7.7
+        },
+        {
+          "port": 445,
+          "protocol": "tcp",
+          "service": "microsoft-ds",
+          "state": "closed",
+          "banner": "",
+          "rtt_ms": null
+        },
+        {
+          "port": 53,
+          "protocol": "tcp",
+          "service": "dns",
+          "state": "open",
+          "banner": "BIND 9.16",
+          "rtt_ms": 13.25
+        }
+      ],
+      "summary": {
+        "open_ports": 4,
+        "total_ports_checked": 6
+      }
+    }
+  ]
+}

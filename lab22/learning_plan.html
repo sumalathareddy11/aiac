@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Assisted Learning Platform</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+        h1 { color: #333; margin-bottom: 30px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display:block; margin-bottom:8px; color:#555; font-weight:600 }
+        input, select, textarea { width:100%; padding:12px; border:2px solid #ddd; border-radius:5px; font-size:14px }
+        input:focus, select:focus, textarea:focus { outline:none; border-color:#667eea; box-shadow:0 0 5px rgba(102,126,234,0.3) }
+        button { background:#667eea; color:#fff; padding:12px 30px; border:none; border-radius:5px; font-size:16px; font-weight:600; cursor:pointer; width:100% }
+        button:hover { background:#764ba2 }
+        .results { margin-top:30px; padding:20px; background:#f8f9fa; border-radius:5px; display:none }
+        .results.active { display:block }
+        .result-item { background:white; padding:15px; margin-bottom:10px; border-left:4px solid #667eea; border-radius:3px }
+        .result-item strong { color:#667eea }
+        ul.clean { margin:8px 0 0 20px }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 AI-Assisted Learning Platform</h1>
+
+        <form id="learningForm" aria-label="AI learning plan form">
+            <div class="form-group">
+                <label for="studentName">Student Name:</label>
+                <input type="text" id="studentName" placeholder="Enter your name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <select id="subject" required>
+                    <option value="">-- Select Subject --</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Science">Science</option>
+                    <option value="English">English</option>
+                    <option value="History">History</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="proficiency">Current Proficiency Level:</label>
+                <select id="proficiency" required>
+                    <option value="">-- Select Level --</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="learningGoal">Learning Goal:</label>
+                <textarea id="learningGoal" rows="4" placeholder="What do you want to learn?" required></textarea>
+            </div>
+
+            <button type="submit">Generate AI Learning Plan</button>
+        </form>
+
+        <div id="results" class="results" role="region" aria-live="polite" aria-hidden="true" tabindex="-1">
+            <h2>📋 Your Personalized Learning Plan</h2>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Small helper to escape user-provided text to avoid HTML injection
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // AI Integration: Simulated intelligent learning path generation
+        class AILearningPlanner {
+            generateLearningPath(studentData) {
+                const plans = {
+                    Mathematics: {
+                        Beginner: ["Arithmetic Basics", "Number Systems", "Basic Geometry", "Introduction to Algebra"],
+                        Intermediate: ["Quadratic Equations", "Trigonometry", "Statistics", "Advanced Algebra"],
+                        Advanced: ["Calculus", "Linear Algebra", "Complex Analysis", "Differential Equations"]
+                    },
+                    Science: {
+                        Beginner: ["Physics Basics", "Chemistry Introduction", "Biology Fundamentals", "Earth Science"],
+                        Intermediate: ["Mechanics", "Organic Chemistry", "Genetics", "Ecology"],
+                        Advanced: ["Quantum Physics", "Biochemistry", "Molecular Biology", "Astrophysics"]
+                    },
+                    English: {
+                        Beginner: ["Grammar Basics", "Vocabulary Building", "Reading Comprehension", "Writing Fundamentals"],
+                        Intermediate: ["Literature Analysis", "Essay Writing", "Advanced Grammar", "Creative Writing"],
+                        Advanced: ["Literary Criticism", "Advanced Composition", "Rhetoric", "Linguistics"]
+                    },
+                    History: {
+                        Beginner: ["Ancient Civilizations", "Medieval History", "Modern History Overview", "World Cultures"],
+                        Intermediate: ["Renaissance & Enlightenment", "Industrial Revolution", "20th Century Events", "Cold War"],
+                        Advanced: ["Historiography", "Geopolitical Analysis", "Cultural History", "Intellectual Movements"]
+                    }
+                };
+
+                // Safe lookup: avoid errors when subject/proficiency not present
+                const subj = studentData.subject || '';
+                const prof = studentData.proficiency || '';
+                if (plans[subj] && plans[subj][prof]) return plans[subj][prof];
+                return [];
+            }
+
+            estimateDuration(proficiency) {
+                const durations = { Beginner: "8-12 weeks", Intermediate: "6-10 weeks", Advanced: "4-8 weeks" };
+                return durations[proficiency] || "Varies";
+            }
+
+            recommendResources(subject, proficiency) {
+                const resources = {
+                    Beginner: ["Interactive Tutorials", "YouTube Channels", "Online Quizzes"],
+                    Intermediate: ["Structured Courses", "Practice Problems", "Discussion Forums"],
+                    Advanced: ["Research Papers", "Peer Review Groups", "Capstone Projects"]
+                };
+                return resources[proficiency] || ["General Resources"];
+            }
+        }
+
+        document.getElementById('learningForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const studentData = {
+                name: document.getElementById('studentName').value.trim(),
+                subject: document.getElementById('subject').value,
+                proficiency: document.getElementById('proficiency').value,
+                goal: document.getElementById('learningGoal').value.trim()
+            };
+
+            const planner = new AILearningPlanner();
+            const learningPath = planner.generateLearningPath(studentData) || [];
+            const duration = planner.estimateDuration(studentData.proficiency);
+            const resources = planner.recommendResources(studentData.subject, studentData.proficiency) || [];
+
+            displayResults(studentData, learningPath, duration, resources);
+        });
+
+        function displayResults(data, path, duration, resources) {
+            const resultContent = document.getElementById('resultContent');
+            const safeName = escapeHtml(data.name) || 'Learner';
+            const safeSubject = escapeHtml(data.subject) || 'N/A';
+            const safeGoal = escapeHtml(data.goal) || '';
+
+            const topicsHtml = (path || []).map(topic => `<li>${escapeHtml(topic)}</li>`).join('');
+            const resourcesHtml = (resources || []).map(r => `<li>${escapeHtml(r)}</li>`).join('');
+
+            let html = `
+                <div class="result-item">
+                    <strong>👤 Student:</strong> ${safeName}
+                </div>
+                <div class="result-item">
+                    <strong>📚 Subject:</strong> ${safeSubject}
+                </div>
+                <div class="result-item">
+                    <strong>⏱️ Estimated Duration:</strong> ${escapeHtml(duration)}
+                </div>
+                <div class="result-item">
+                    <strong>🎯 Your Goal:</strong> ${safeGoal}
+                </div>
+                <div class="result-item">
+                    <strong>📖 Recommended Topics:</strong>
+                    <ul class="clean">
+                        ${topicsHtml || '<li>No recommended topics available</li>'}
+                    </ul>
+                </div>
+                <div class="result-item">
+                    <strong>🔗 Resources:</strong>
+                    <ul class="clean">
+                        ${resourcesHtml || '<li>No resources available</li>'}
+                    </ul>
+                </div>
+            `;
+
+            resultContent.innerHTML = html;
+            const resultsEl = document.getElementById('results');
+            resultsEl.classList.add('active');
+            resultsEl.setAttribute('aria-hidden', 'false');
+            // Move keyboard focus to the results to help screen reader users
+            resultsEl.focus && resultsEl.focus();
+        }
+    </script>
+</body>
+</html>
