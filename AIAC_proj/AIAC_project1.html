@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>College Companion</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; background:#f5f7fb; }
+  nav { background:#2b6cb0; color:white; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; }
+  nav h1 { font-size:20px; margin:0; }
+  nav button { background:white; color:#2b6cb0; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+  .container { display:flex; height:calc(100vh - 50px); }
+  aside { width:220px; background:#2c5282; color:white; display:flex; flex-direction:column; }
+  aside button { background:none; border:none; color:white; padding:14px; text-align:left; cursor:pointer; border-bottom:1px solid #2b6cb0; }
+  aside button:hover, aside button.active { background:#2b6cb0; }
+  main { flex:1; padding:20px; overflow:auto; }
+  h2 { color:#2b6cb0; margin-top:0; }
+  .card { background:white; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin-bottom:15px; }
+  label { display:block; margin-top:8px; }
+  input, select { width:100%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:4px; }
+  button.primary { background:#2b6cb0; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; margin-top:10px; }
+  button.primary:hover { background:#2c5282; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+  th { background:#edf2f7; }
+  .reminder-box {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: #2b6cb0;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    animation: fadeInOut 6s ease forwards;
+  }
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10%, 90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>College Companion</h1>
+  <button onclick="resetData()">Reset Data</button>
+</nav>
+
+<div class="container">
+  <aside>
+    <button class="active" onclick="showSection('dashboard', this)">🏠 Dashboard</button>
+    <button onclick="showSection('schedule', this)">📅 Schedule</button>
+    <button onclick="showSection('assignments', this)">📝 Assignments</button>
+    <button onclick="showSection('exams', this)">🎓 Exams</button>
+    <button onclick="showSection('notes', this)">📚 Notes</button>
+  </aside>
+
+  <main id="content">
+    <!-- Dashboard Section -->
+    <section id="dashboard">
+      <h2>Welcome Back 👋</h2>
+      <div class="card">
+        <h3>Overview</h3>
+        <p>Stay on top of your classes, assignments, and exams with timely reminders.</p>
+      </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section id="schedule" style="display:none;">
+      <h2>📅 Schedule</h2>
+      <div class="card">
+        <label>Subject</label><input id="subj">
+        <label>Day</label>
+        <select id="day">
+          <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+          <option>Thursday</option><option>Friday</option><option>Saturday</option>
+        </select>
+        <label>Start Time</label><input type="time" id="start">
+        <label>End Time</label><input type="time" id="end">
+        <label>Location</label><input id="loc">
+        <button class="primary" onclick="addSchedule()">Add Class</button>
+      </div>
+      <table id="scheduleTable">
+        <tr><th>Subject</th><th>Day</th><th>Time</th><th>Location</th></tr>
+      </table>
+    </section>
+
+    <!-- Assignments Section -->
+    <section id="assignments" style="display:none;">
+      <h2>📝 Assignments</h2>
+      <div class="card">
+        <label>Title</label><input id="aTitle">
+        <label>Subject</label><input id="aSubject">
+        <label>Due Date</label><input type="date" id="aDue">
+        <label>Status</label>
+        <select id="aStatus"><option>Pending</option><option>Completed</option></select>
+        <button class="primary" onclick="addAssignment()">Add Assignment</button>
+      </div>
+      <table id="assignmentTable">
+        <tr><th>Title</th><th>Subject</th><th>Due Date</th><th>Status</th></tr>
+      </table>
+    </section>
+
+    <!-- Exams Section -->
+    <section id="exams" style="display:none;">
+      <h2>🎓 Exams</h2>
+      <div class="card">
+        <label>Subject</label><input id="eSubject">
+        <label>Date</label><input type="date" id="eDate">
+        <label>Time</label><input type="time" id="eTime">
+        <button class="primary" onclick="addExam()">Add Exam</button>
+      </div>
+      <table id="examTable">
+        <tr><th>Subject</th><th>Date</th><th>Time</th></tr>
+      </table>
+    </section>
+
+    <!-- Notes Section -->
+    <section id="notes" style="display:none;">
+      <h2>📚 Notes</h2>
+      <div class="card">
+        <label>Title</label><input id="nTitle">
+        <label>Content</label><textarea id="nContent" rows="4" style="width:100%;"></textarea>
+        <button class="primary" onclick="addNote()">Add Note</button>
+      </div>
+      <table id="notesTable">
+        <tr><th>Title</th><th>Content</th></tr>
+      </table>
+    </section>
+  </main>
+</div>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('main section').forEach(sec => sec.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+  document.querySelectorAll('aside button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+function loadData(key) { return JSON.parse(localStorage.getItem(key) || "[]"); }
+
+function addSchedule() {
+  let s = {subject: subj.value, day: day.value, start: start.value, end: end.value, location: loc.value};
+  let arr = loadData('schedule'); arr.push(s); saveData('schedule', arr); renderSchedule();
+}
+function renderSchedule() {
+  let arr = loadData('schedule'), tbl = document.getElementById('scheduleTable');
+  tbl.innerHTML = "<tr><th>Subject</th><th>Day</th><th>Time</th><th>Location</th></tr>";
+  arr.forEach(s => tbl.innerHTML += `<tr><td>${s.subject}</td><td>${s.day}</td><td>${s.start}-${s.end}</td><td>${s.location}</td></tr>`);
+}
+function addAssignment() {
+  let a = {title: aTitle.value, subject: aSubject.value, due: aDue.value, status: aStatus.value};
+  let arr = loadData('assignments'); arr.push(a); saveData('assignments', arr); renderAssignments();
+}
+function renderAssignments() {
+  let arr = loadData('assignments'), tbl = document.getElementById('assignmentTable');
+  tbl.innerHTML = "<tr><th>Title</th><th>Subject</th><th>Due Date</th><th>Status</th></tr>";
+  arr.forEach(a => tbl.innerHTML += `<tr><td>${a.title}</td><td>${a.subject}</td><td>${a.due}</td><td>${a.status}</td></tr>`);
+}
+function addExam() {
+  let e = {subject: eSubject.value, date: eDate.value, time: eTime.value};
+  let arr = loadData('exams'); arr.push(e); saveData('exams', arr); renderExams();
+}
+function renderExams() {
+  let arr = loadData('exams'), tbl = document.getElementById('examTable');
+  tbl.innerHTML = "<tr><th>Subject</th><th>Date</th><th>Time</th></tr>";
+  arr.forEach(e => tbl.innerHTML += `<tr><td>${e.subject}</td><td>${e.date}</td><td>${e.time}</td></tr>`);
+}
+function addNote() {
+  let n = {title: nTitle.value, content: nContent.value};
+  let arr = loadData('notes'); arr.push(n); saveData('notes', arr); renderNotes();
+}
+function renderNotes() {
+  let arr = loadData('notes'), tbl = document.getElementById('notesTable');
+  tbl.innerHTML = "<tr><th>Title</th><th>Content</th></tr>";
+  arr.forEach(n => tbl.innerHTML += `<tr><td>${n.title}</td><td>${n.content}</td></tr>`);
+}
+function resetData() { localStorage.clear(); location.reload(); }
+
+renderSchedule(); renderAssignments(); renderExams(); renderNotes();
+
+/* ===== Reminder System ===== */
+function showReminder(msg) {
+  let box = document.createElement('div');
+  box.className = 'reminder-box';
+  box.textContent = msg;
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 6000);
+}
+
+function checkReminders() {
+  let now = new Date();
+  let currentDay = now.toLocaleString('en-US', { weekday: 'long' });
+  let currentTime = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+  let today = now.toISOString().split('T')[0];
+
+  // === Classes starting soon ===
+  let schedule = loadData('schedule');
+  schedule.forEach(s => {
+    if (s.day.toLowerCase() === currentDay.toLowerCase()) {
+      let [sh, sm] = s.start.split(':').map(Number);
+      if (!isNaN(sh)) {
+        let classTime = new Date();
+        classTime.setHours(sh, sm || 0, 0, 0);
+        let diff = (classTime - now) / 60000;
+        if (diff > 0 && diff <= 10) {
+          showReminder(`📚 Your class "${s.subject}" starts in ${Math.round(diff)} min at ${s.location}`);
+        }
+      }
+    }
+  });
+
+  // === Assignments due today ===
+  let assigns = loadData('assignments');
+  assigns.forEach(a => {
+    if (a.due === today && a.status !== 'Completed') {
+      showReminder(`📝 Assignment "${a.title}" for ${a.subject} is due today!`);
+    }
+  });
+
+  // === Exams today ===
+  let exams = loadData('exams');
+  exams.forEach(e => {
+    if (e.date === today) {
+      showReminder(`🎓 Exam for "${e.subject}" today at ${e.time}`);
+    }
+  });
+}
+
+setInterval(checkReminders, 60000);
+checkReminders();
+</script>
+</body>
+</html>
