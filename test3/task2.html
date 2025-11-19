@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Responsive 3-Column Image Gallery</title>
+  <style>
+    :root{
+      --gap: 16px;
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --shadow: 0 6px 18px rgba(15,23,42,0.08);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{background:var(--bg);color:#0f172a;padding:32px;box-sizing:border-box}
+
+    .container{max-width:1200px;margin:0 auto}
+
+    h1{font-size:1.5rem;margin:0 0 18px 0}
+    p.lead{margin:0 0 24px 0;color:#334155}
+
+    /* Grid */
+    .gallery{
+      display:grid;
+      gap:var(--gap);
+      grid-template-columns:repeat(3,1fr);
+    }
+
+    /* Responsive columns */
+    @media (max-width:900px){
+      .gallery{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:560px){
+      .gallery{grid-template-columns:repeat(1,1fr)}
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      position:relative;
+      transition:transform .22s ease,box-shadow .22s ease;
+    }
+    .card:focus{outline:3px solid rgba(37,99,235,0.18)}
+    .card:hover{transform:translateY(-6px)}
+
+    .card img{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      display:block;
+      vertical-align:middle;
+    }
+
+    .meta{
+      padding:12px 14px;
+      font-size:0.95rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .caption{color:#0f172a;font-weight:600}
+    .sub{color:#64748b;font-size:0.85rem}
+
+    /* Modal / Lightbox */
+    .lightbox{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(2,6,23,0.6);z-index:1200
+    }
+    .lightbox.open{display:flex}
+    .lb-inner{
+      max-width:1100px;width:100%;background:transparent;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:12px
+    }
+    .lb-img{
+      width:100%;max-height:80vh;border-radius:10px;overflow:hidden;box-shadow:0 18px 40px rgba(2,6,23,0.45);
+    }
+    .lb-img img{width:100%;height:auto;display:block}
+    .lb-meta{display:flex;justify-content:space-between;align-items:center;width:100%;color:white}
+    .lb-caption{font-size:1.05rem;font-weight:600}
+    .lb-actions{display:flex;gap:10px}
+
+    .btn{
+      background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:8px 10px;border-radius:8px;color:white;font-weight:600;cursor:pointer
+    }
+    .btn:focus{outline:3px solid rgba(255,255,255,0.12)}
+
+    /* small helper */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Responsive 3-Column Image Gallery</h1>
+    <p class="lead">Click any image to view it larger. The layout is responsive: 3 columns on wide screens, 2 on medium and 1 on mobile.</p>
+
+    <div class="gallery" id="gallery" aria-live="polite">
+      <!-- Each card should have data attributes to power the lightbox -->
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=1600&auto=format&fit=crop&q=80" data-caption="Mountain at sunrise">
+        <img loading="lazy" alt="Mountain" src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Mountain</div>
+            <div class="sub">Nature / Sunrise</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600&auto=format&fit=crop&q=80" data-caption="Forest path">
+        <img loading="lazy" alt="Forest path" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Forest</div>
+            <div class="sub">Trail / Green</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1493244040629-496f6d136cc3?w=1600&auto=format&fit=crop&q=80" data-caption="Calm lake">
+        <img loading="lazy" alt="Calm lake" src="https://images.unsplash.com/photo-1493244040629-496f6d136cc3?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Lake</div>
+            <div class="sub">Water / Reflection</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&auto=format&fit=crop&q=80" data-caption="City skyline at dusk">
+        <img loading="lazy" alt="City skyline" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">City</div>
+            <div class="sub">Skyline / Dusk</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&auto=format&fit=crop&q=80" data-caption="Desert dunes">
+        <img loading="lazy" alt="Desert dunes" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Desert</div>
+            <div class="sub">Sand / Dunes</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=1600&auto=format&fit=crop&q=80" data-caption="Aurora borealis">
+        <img loading="lazy" alt="Aurora" src="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Aurora</div>
+            <div class="sub">Night / Sky</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1441829266145-bb6f6b8b3d2a?w=1600&auto=format&fit=crop&q=80" data-caption="Flower close-up">
+        <img loading="lazy" alt="Flower" src="https://images.unsplash.com/photo-1441829266145-bb6f6b8b3d2a?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Flower</div>
+            <div class="sub">Macro / Nature</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=1600&auto=format&fit=crop&q=80" data-caption="Rocky coastline">
+        <img loading="lazy" alt="Coastline" src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Coast</div>
+            <div class="sub">Sea / Rocks</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1600&auto=format&fit=crop&q=80" data-caption="Snowy mountains">
+        <img loading="lazy" alt="Snowy" src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Snow</div>
+            <div class="sub">Mountains / Cold</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop&q=80" data-caption="Vintage bicycle">
+        <img loading="lazy" alt="Bicycle" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Bike</div>
+            <div class="sub">Vintage / Lifestyle</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66&w=1600&auto=format&fit=crop&q=80" data-caption="Ocean waves">
+        <img loading="lazy" alt="Waves" src="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Waves</div>
+            <div class="sub">Ocean / Movement</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-full="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&auto=format&fit=crop&q=80" data-caption="Bridge at night">
+        <img loading="lazy" alt="Bridge" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&auto=format&fit=crop&q=60">
+        <div class="meta">
+          <div>
+            <div class="caption">Bridge</div>
+            <div class="sub">Architecture / Night</div>
+          </div>
+          <div class="sub">800×600</div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="lb-inner" role="document">
+      <div class="lb-img" id="lb-img" aria-live="polite">
+        <img alt="Expanded view" src="" id="lb-image">
+      </div>
+      <div class="lb-meta">
+        <div class="lb-caption" id="lb-caption">&nbsp;</div>
+        <div class="lb-actions">
+          <a id="lb-download" class="btn" download rel="noopener" href="#">Download</a>
+          <button class="btn" id="lb-close" aria-label="Close">Close</button>
+        </div>
+      </div>
+    </div>
+    <button class="sr-only" id="lb-skip">skip</button>
+  </div>
+
+  <script>
+    (function(){
+      const gallery = document.getElementById('gallery');
+      const lightbox = document.getElementById('lightbox');
+      const lbImage = document.getElementById('lb-image');
+      const lbCaption = document.getElementById('lb-caption');
+      const lbDownload = document.getElementById('lb-download');
+      const lbClose = document.getElementById('lb-close');
+
+      let currentCard = null;
+
+      function openLightbox(card){
+        const full = card.dataset.full;
+        const caption = card.dataset.caption || '';
+        currentCard = card;
+        lbImage.src = full;
+        lbImage.alt = caption;
+        lbCaption.textContent = caption;
+        lbDownload.href = full;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden','false');
+        // trap focus
+        lbClose.focus();
+      }
+
+      function closeLightbox(){
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden','true');
+        lbImage.src = '';
+        lbCaption.textContent = '';
+        if(currentCard) currentCard.focus();
+        currentCard = null;
+      }
+
+      // click / key handlers for cards
+      gallery.addEventListener('click', e => {
+        const card = e.target.closest('.card');
+        if(!card) return;
+        openLightbox(card);
+      });
+
+      gallery.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          const card = e.target.closest('.card');
+          if(!card) return;
+          e.preventDefault();
+          openLightbox(card);
+        }
+      });
+
+      // close when clicking outside the image
+      lightbox.addEventListener('click', e => {
+        if(e.target === lightbox) closeLightbox();
+      });
+      lbClose.addEventListener('click', closeLightbox);
+
+      // keyboard accessibility
+      document.addEventListener('keydown', e => {
+        if(e.key === 'Escape' && lightbox.classList.contains('open')){
+          closeLightbox();
+        }
+        // left/right to move between images
+        if(lightbox.classList.contains('open') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){
+          const cards = Array.from(document.querySelectorAll('.card'));
+          if(!currentCard) return;
+          let idx = cards.indexOf(currentCard);
+          if(e.key === 'ArrowRight') idx = (idx + 1) % cards.length;
+          if(e.key === 'ArrowLeft') idx = (idx - 1 + cards.length) % cards.length;
+          openLightbox(cards[idx]);
+        }
+      });
+
+      // lazy-load fallback: show full image once it finishes loading
+      lbImage.addEventListener('load', ()=>{
+        // image loaded
+      });
+
+      // Improve mobile pinch-to-zoom: allow user to long-press download or use native pinch
+    })();
+  </script>
+</body>
+</html>
